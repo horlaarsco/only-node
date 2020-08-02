@@ -1,0 +1,57 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #73a9ff;
+  /* color: white; */
+}
+
+.brand {
+  font-size: 2rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+nav ul {
+  display: flex;
+  align-items: center;
+}
+
+nav li {
+  list-style-type: none;
+  margin-right: 2rem;
+}
+
+main {
+  padding: 2rem;
+}
+
+h1 {
+  margin-bottom: 2rem;
+}
+
+main li {
+  margin-top: 1rem;
+  list-style-type: none;
+}
+
+input {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  width: 300px;
+}
+
+.inputBox {
+  margin: 1rem 0;
+}
+
+button {
+  padding: 0.5rem;
+  width: 300px;
+}

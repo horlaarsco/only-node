@@ -3,9 +3,13 @@ var fs = require("fs");
 var url = require("url");
 
 const server = http.createServer((req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Request-Method", "*");
+  res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
+  res.setHeader("Access-Control-Allow-Headers", "*");
   const urlObject = url.parse(req.url, true);
-  const pathName = `.${urlObject.pathname}`;
-  switch (pathName) {
+  const fileName = `.${urlObject.pathname}`;
+  switch (fileName) {
     case "./":
       fs.readdir("./", (err, files) => {
         if (err) {
@@ -20,34 +24,64 @@ const server = http.createServer((req, res) => {
       });
       return;
     case "./add":
-      const queries = urlObject.query;
-      if (!queries.name || !queries.body) {
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.write("Enter a name and body");
-        res.end();
-      } else {
-        fs.readFile(`${queries.name}.txt`, (err, data) => {
-          if (data) {
-            res.writeHead(200, { "Content-Type": "text/html" });
-            res.write("File Already Exist");
+      if (req.method === "POST") {
+        let body = "";
+        req.on("data", (chunk) => {
+          body += chunk.toString(); // convert Buffer to string
+        });
+        req.on("end", () => {
+          body = JSON.parse(body);
+          if (!body.title || !body.body) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            res.write("Enter a title and body");
             res.end();
           } else {
-            fs.writeFile(`${queries.name}.txt`, queries.body, (err) => {
-              if (err) {
-                res.writeHead(400, { "Content-Type": "text/html" });
-                res.write(err);
+            fs.readFile(`${body.title}.txt`, (err, data) => {
+              if (data) {
+                res.writeHead(200, { "Content-Type": "text/html" });
+                res.write("File Already Exist");
                 res.end();
+              } else {
+                fs.writeFile(`${body.title}.txt`, body.body, (err) => {
+                  if (err) {
+                    res.writeHead(400, { "Content-Type": "text/html" });
+                    res.write(err);
+                    res.end();
+                  }
+                  res.writeHead(200, { "Content-Type": "text/html" });
+                  res.write("Saved");
+                  res.end();
+                });
               }
-              res.writeHead(200, { "Content-Type": "text/html" });
-              res.write("Saved");
-              res.end();
             });
           }
         });
+      } else {
+        fs.readFile("./add.html", null, function (error, data) {
+          if (error) {
+            res.writeHead(404);
+            respone.write("Whoops! File not found!");
+          } else {
+            res.write(data);
+          }
+          res.end();
+        });
       }
+
+      return;
+    case "./style.css":
+      fs.readFile("./style.css", null, function (error, data) {
+        if (error) {
+          res.writeHead(404);
+          res.write("No file found");
+        } else {
+          res.write(data);
+        }
+        res.end();
+      });
       return;
     default:
-      fs.readFile(`${pathName}.txt`, (err, data) => {
+      fs.readFile(`${fileName}.txt`, (err, data) => {
         if (data) {
           res.writeHead(400, { "Content-Type": "text/html" });
           res.write(data);

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+
+    <title>Add</title>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="">Notes</a>
+      <nav>
+        <ul>
+          <li>Home</li>
+          <li>Random</li>
+          <li>Shopping</li>
+          <li>Work</li>
+          <li>Add Notes</li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div>
+        <div>
+          <label for="title">Title</label><br />
+          <input type="text" id="title" name="title" value="John" /><br />
+        </div>
+        <div class="inputBox">
+          <label for="body">Body</label><br />
+          <input type="text" id="body" name="body" value="Doe" /><br /><br />
+        </div>
+        <button onclick="myFunction()" type="submit">Submit</button>
+      </div>
+    </main>
+
+    <script>
+      async function myFunction() {
+        const title = document.getElementById("title").value;
+        const body = document.getElementById("body").value;
+        const response = await fetch("/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ title, body }),
+        });
+        window.location.replace("/");
+        return response.json();
+      }
+    </script>
+  </body>
+</html>
